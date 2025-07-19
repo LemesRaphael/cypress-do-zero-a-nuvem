@@ -89,4 +89,37 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('button[type=submit]').click();
     cy.get('.success').should('be.visible');
   });
+
+  it('seleciona um produto (YouTube) por seu texto', () => {
+    cy.get('#product').select('YouTube');
+    cy.get('#product').should('have.value', 'youtube')
+  });
+
+  it('seleciona um produto (Mentoria) por seu valor (value)', () => {
+    cy.get('#product').select('mentoria');
+    cy.get('#product').should('have.value', 'mentoria');
+  });
+
+  it('seleciona um produto (Blog) por seu índice', () => {
+    cy.get('#product').select(1);
+    cy.get('#product').should('have.value', 'blog');
+  });
+
+  it('marca o tipo de atendimento "Feedback"', () => {
+    cy.get('input[type="radio"]').check('feedback');
+    cy.get('input[type="radio"]').should('be.checked');
+    // Outra forma de "setar" valores no check
+    // cy.get('input[type="radio"][value="feedback"]').check().should('be.checked');
+  });
+
+  it('marca cada tipo de atendimento', () => {
+    cy.get('input[type="radio"]').check('ajuda').should('be.checked');
+    cy.get('input[type="radio"]').check('elogio').should('be.checked');
+    cy.get('input[type="radio"]').check('feedback').should('be.checked');
+
+    // Outra forma de selecionar varios radios
+    // cy.get('input[type="radio"]').each(typeOfService => {
+    //   cy.wrap(typeOfService).check().should('be.checked')
+    // });
+  });
 })

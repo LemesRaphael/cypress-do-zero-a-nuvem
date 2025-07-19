@@ -26,7 +26,11 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   });
 
   it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
+    cy.get('#firstName').type('Primeiro Nome');
+    cy.get('#lastName').type('Sobrenome');
+    cy.get('#email-checkbox').check();
     cy.get('#email').type('Teste');
+    cy.get('#open-text-area').type('Teste');
     cy.get('button[type=submit]').click();
     cy.get('.error').should('be.visible');
   });
@@ -37,6 +41,9 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   });
 
   it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
+    cy.get('#firstName').type('Primeiro Nome');
+    cy.get('#lastName').type('Sobrenome');
+    cy.get('#email').type('Teste@teste.com');
     cy.get('#phone-checkbox').check();
     cy.get('button[type=submit]').click();
     cy.get('.error').should('be.visible');
@@ -57,5 +64,29 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
     cy.get('button[type=submit]').click();
     cy.get('.error').should('be.visible');
+  });
+
+  it('envia o formuário com sucesso usando um comando customizado', () => {
+    cy.fillMandatoryFieldsAndSubmit()
+    cy.get('button[type=submit]').click();
+    cy.get('.success').should('be.visible')
+  });
+
+  it('envia o formuário com sucesso usando um comando customizado com parametro', () => {
+    const data = {
+      primeiroNome: 'Teste',
+      sobrenome: 'Sobrenome Teste',
+      email: 'teste@teste.com',
+      text: 'Teste.'
+    }
+    cy.fillMandatoryFieldsAndSubmitParam(data);
+    cy.get('button[type=submit]').click();
+    cy.get('.success').should('be.visible');
+  });
+
+  it('envia o formuário com sucesso usando um comando customizado com parametro Default', () => {
+    cy.fillMandatoryFieldsAndSubmitParamDefault();
+    cy.get('button[type=submit]').click();
+    cy.get('.success').should('be.visible');
   });
 })

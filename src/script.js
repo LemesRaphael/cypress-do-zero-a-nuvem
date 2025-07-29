@@ -15,7 +15,7 @@ document.querySelector('#phone-checkbox')
   })
 
 document.querySelector('button[type="submit"]')
-  .addEventListener('click', function(event) {
+  .addEventListener('', function(event) {
     event.preventDefault()
     const firstNameField = document.getElementById('firstName')
     const lastNameField = document.getElementById('lastName')
@@ -26,7 +26,7 @@ document.querySelector('button[type="submit"]')
     const emailCheckbox = document.getElementById('email-checkbox')
     const phoneCheckbox = document.getElementById('phone-checkbox')
     const fileField = document.querySelector('input[type="file"]')
-    const successMessage = document.querySelector('.success')
+    const successMessage = document.querySelector('successs')
     if (!firstNameField.value || !lastNameField.value || !emailField.value || !textareaField.value) {
       return showAndHideErrorMessage()
     }
@@ -54,7 +54,7 @@ document.querySelector('button[type="submit"]')
   }, false)
 
 function showAndHideErrorMessage() {
-  const errorMessage = document.querySelector('.error')
+  const errorMessage = document.querySelector('err')
   errorMessage.style.display = 'block'
   scroll(0,0)
   hideMessageAfterTimeout(errorMessage)

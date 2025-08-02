@@ -21,8 +21,11 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('@email').should('have.value', 'teste@cypress.com');
     cy.get('@EmailCheckbox').should('be.checked');
     cy.get('@TextArea').should('have.value', 'Testestestestetestestestestestestestestestestestesteste');
+    cy.clock();
     cy.get('@BotaoEnviar').click();
     cy.get('.success').should('be.visible');
+    cy.tick(3000);
+    cy.get('.success').should('not.be.visible');
   });
 
   it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
@@ -62,14 +65,20 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   });
 
   it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
+    cy.clock();
     cy.get('button[type=submit]').click();
     cy.get('.error').should('be.visible');
+    cy.tick(3000);
+    cy.get('.error').should('not.be.visible');
   });
 
   it('envia o formuário com sucesso usando um comando customizado', () => {
     cy.fillMandatoryFieldsAndSubmit()
+    cy.clock();
     cy.get('button[type=submit]').click();
-    cy.get('.success').should('be.visible')
+    cy.get('.success').should('be.visible');
+    cy.tick(3000);
+    cy.get('.success').should('not.be.visible');
   });
 
   it('envia o formuário com sucesso usando um comando customizado com parametro', () => {
@@ -80,14 +89,20 @@ describe('Central de Atendimento ao Cliente TAT', () => {
       text: 'Teste.'
     }
     cy.fillMandatoryFieldsAndSubmitParam(data);
+    cy.clock();
     cy.get('button[type=submit]').click();
     cy.get('.success').should('be.visible');
+    cy.tick(3000);
+    cy.get('.success').should('not.be.visible');
   });
 
   it('envia o formuário com sucesso usando um comando customizado com parametro Default', () => {
     cy.fillMandatoryFieldsAndSubmitParamDefault();
+    cy.clock();
     cy.get('button[type=submit]').click();
     cy.get('.success').should('be.visible');
+    cy.tick(3000);
+    cy.get('.success').should('not.be.visible');
   });
 
   it('seleciona um produto (YouTube) por seu texto', () => {
@@ -162,6 +177,43 @@ describe('Central de Atendimento ao Cliente TAT', () => {
 
   it('acessa a página da política de privacidade removendo o target e então clicando no link', () => {
     cy.contains('a', 'Política de Privacidade').invoke('removeAttr', 'target').click();
-    cy.contains('h1', 'CAC TAT - Política de Privacidade').should('be.visible');
+    Cypress._.times(3, () => {
+      cy.contains('h1', 'CAC TAT - Política de Privacidade').should('be.visible');
+    });
+  });
+
+  it('exibe e oculta as mensagens de sucesso e erro usando .invoke()', () => {
+    cy.get('.success')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible')
+    cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+  });
+
+  it('preenche o campo da área de texto usando o comando invoke', () => {
+    const repeatedText = Cypress._.repeat('lorem ipsum, ', 3);
+    cy.get('#open-text-area').invoke('val', repeatedText).should('have.value', 'lorem ipsum, lorem ipsum, lorem ipsum, ');
+  });
+
+  it('faz uma requisição HTTP', () => {
+    it('busca usuários corretamente', () => {
+      cy.request({
+        method: 'GET',
+        url: 'https://cac-tat-v3.s3.eu-central-1.amazonaws.com/index.html'
+      }).then((response) => {
+        expect(response.status).to.equal(200);
+        expect(response.statusText).to.equal('OK');
+        expect(response.body).to.have.value('CAC TAT');
+      });
+    });
   });
 });
